@@ -7,6 +7,7 @@ import io.github.novolmob.gradle.tools.vcs.utils.GradleUtil.registerGitlabPublic
 import org.gradle.api.NamedDomainObjectProvider
 import org.gradle.api.artifacts.dsl.RepositoryHandler
 import org.gradle.api.artifacts.repositories.MavenArtifactRepository
+import org.gradle.api.component.SoftwareComponent
 import org.gradle.api.publish.PublicationContainer
 import org.gradle.api.publish.maven.MavenPublication
 
@@ -15,10 +16,11 @@ open class GitlabPublication(
     val group: String,
     val artifact: String,
     val version: String,
+    val component: SoftwareComponent,
     val token: GitlabToken
 ): Publication<MavenPublication> {
     override fun PublicationContainer.register(): NamedDomainObjectProvider<MavenPublication> =
-        registerGitlabPublication(group, artifact, version)
+        registerGitlabPublication(group, artifact, version, component)
 
     override fun RepositoryHandler.register(): MavenArtifactRepository =
         registerGitlabMavenArtifact(uri, token)
@@ -29,12 +31,13 @@ open class GitlabPublication(
         group: String,
         artifact: String,
         version: String,
+        component: SoftwareComponent,
         token: GitlabToken
     ): GitlabPublication(
         uri = GitlabUtil.getProjectId(gitlabUrl, name, token).let {
             "$gitlabUrl/api/v4/projects/$it/packages/maven"
         },
-        group, artifact, version, token
+        group, artifact, version, component, token
     )
 
 

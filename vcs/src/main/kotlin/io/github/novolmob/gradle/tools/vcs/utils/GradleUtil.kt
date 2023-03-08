@@ -2,6 +2,7 @@ package io.github.novolmob.gradle.tools.vcs.utils
 
 import io.github.novolmob.gradle.tools.vcs.gitlab.GitlabToken
 import org.gradle.api.artifacts.dsl.RepositoryHandler
+import org.gradle.api.component.SoftwareComponent
 import org.gradle.api.credentials.HttpHeaderCredentials
 import org.gradle.api.publish.PublicationContainer
 import org.gradle.api.publish.maven.MavenPublication
@@ -22,11 +23,12 @@ object GradleUtil {
         }
     }
 
-    fun PublicationContainer.registerGitlabPublication(group: String, artifact: String, version: String) =
+    fun PublicationContainer.registerGitlabPublication(group: String, artifact: String, version: String, component: SoftwareComponent) =
         register(artifact, MavenPublication::class.java) {
             this.groupId = group
             this.artifactId = artifact
             this.version = version
+            from(component)
         }
 
 }
